@@ -45,15 +45,20 @@ def GetTitleProductView(request, pk):
 
 # Function to Edit Books Details
 
-def GetEditApiView(request, pk):
-    create_form_dict = {}
-    if request.method == 'POST':
 
-        create_form_dict = dict(request.POST)
-        create_form_dict.pop('csrfmiddlewaretoken')
-        json_data = {k: create_form_dict[k][0] for k in create_form_dict}
-        Books.objects.filter(id=pk).update(**json_data)
-        return JsonResponse({'msg': 'data updated sucessfully !!'})
+def GetEditApiView(request, pk):
+    edit_json_dict = {}
+    if request.method == 'POST':
+        if request.user.is_superuser: # checking if the user is admin 
+
+            edit_json_dict = dict(request.POST)
+            edit_json_dict.pop('csrfmiddlewaretoken')
+            json_data = {k: edit_json_dict[k][0] for k in edit_json_dict}
+            Books.objects.filter(id=pk).update(**json_data)
+            return JsonResponse({'msg': 'data updated sucessfully !!'})
+        else:
+
+            return JsonResponse({'error': 'You cannnot access the Api'})
     else:
-        create_form_dict = []
+        edit_json_dict = []
         return JsonResponse({'error': 'Something went wrong !!'})
