@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+  .redirect_to_page{
+    cursor:pointer;
+  }
+</style>
+
+<!-- Seahc title html -->
+
+<div class="container" id="hide_div">
+  <h3>Search Books Title</h3>
+  <input type="text" class="form-control" id="search" placeholder="  live search"></input>
+</div>
+
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col">
+      <h3 class="text-center">Books Details</h3>
+    </div>
+    <table class="table" id="details_table">
+      <thead>
+       
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Author</th>
+          <th scope="col">Genre</th>
+          <th scope="col">Description</th>
+          <th scope="col">ISBN</th>
+          <th scope="col">Image</th>
+          <th scope="col">Published</th>
+          <th scope="col">Publisher</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data in search_data %}
+        <tr>
+          <th scope="row">{{forloop.counter}}</th>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.title}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.author}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.genre}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.description}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.isbn}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}"><img src ="{{data.image}}" alt="My image" width="100%" height="auto" id="plot"/></td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.published}}</td>
+          <td    url="{% url 'BooksApp:show_product' pk=data.id %}">{{data.publisher}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="col">
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Display Titles in table -->
+
+
+
+<div id="endpoint-url-div" url="{% url 'BooksApp:find_items' %}" style="display: none;"></div>
+
+
+</body>
+
+</html>
+
+<!-- Sending Search title to the view functions -->
+
+<script>
+$("#search").on("keyup", function() {
+   var searchText = $(this).val().toLowerCase();
+  $.each($("#details_table tbody tr"), function() {
+            if($(this).text().toLowerCase().indexOf(searchText) === -1)
+               $(this).hide();
+            else{
+              $(this).show();
+              $(this).addClass('redirect_to_page');
+            }
+          })
+     })
+
+</script>
+
+<!-- Redirecting the title page to the Books details page on the click of Searched title -->
+
+<script>
+$(document).on('click', ".redirect_to_page", function() {
+  var url = $(this).find('td:first').attr('url'); 
+  window.location.href = url
+});
+</script>
+
+
+
+
+{% endblock %}
